@@ -1,0 +1,70 @@
+// Diploid is default in SLiM and also tricky to disable, so leaving it for now.
+// Can implement haploid but it's a little annoying: 14.9 Modeling haploid organisms 
+
+species all initialize() {
+    defineConstant("S", 10);
+    defineConstant("K", 5000); 
+}
+
+species fox initialize() {
+    initializeMutationRate(1e-7);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 1000);
+    initializeRecombinationRate(0);
+
+    initializeSpecies(tickModulo=1, tickPhase=1) ;
+}
+
+species mouse initialize() {
+    initializeMutationRate(1e-7);
+    initializeMutationType("m2", 0.5, "f", 0.0);
+    initializeGenomicElementType("g2", m2, 1.0);
+    initializeGenomicElement(g2, 0, 1000);
+    initializeRecombinationRate(0);
+
+    initializeSpecies(tickModulo=1, tickPhase=1) ;
+}
+
+ticks all 1 early() {
+    // Init all species sizes sampled from loguniform distribution
+    //
+    // Setting species sizes by hand is like this:
+    //    fox.addSubpop("p0", 1000);
+    //    mouse.addSubpop("p1", 5000);
+    sizes = asInteger(rlnorm(S, meanlog=log(K), sdlog=1));
+
+    for (idx in seqAlong(community.allSpecies)){
+        community.allSpecies[idx].addSubpop("p"+idx, sizes[idx]);
+    }
+
+    // Set up logging
+    log = community.createLogFile("com_log.txt", logInterval=20);
+    log.addCustomColumn("H_fox", "calcHeterozygosity(p0.genomes);");
+    log.addCustomColumn("H_mouse", "calcHeterozygosity(p1.genomes);");
+    log.addCustomColumn("N_fox", "p0.individualCount;");
+    log.addCustomColumn("N_mouse", "p1.individualCount;");
+}
+
+ticks all early() {
+    sizes = community.allSubpopulations.individualCount;
+
+    // Fix community size to exactly K
+    newsizes = rbinom(size(sizes), K, sizes/sum(sizes));
+
+    // Alternative:
+    // Allow community size to 'wander' around the total size initialized
+    // newsizes = rbinom(size(sizes), sum(sizes), sizes/sum(sizes));
+
+    idx = 0;
+    while (idx < size(sizes)) {
+        community.allSubpopulations[idx].setSubpopulationSize(newsizes[idx]);
+        idx = idx + 1; 
+    }
+}
+
+ticks all 1000 late() {
+    for (p in community.allSubpopulations)
+        catn(c(p.name, p.individualCount)) ;
+} 
+

@@ -1,0 +1,22 @@
+initialize() {
+ initializeMutationRate(1e-7);
+ initializeMutationType("m1", 0.5, "f", 0.0);
+ initializeGenomicElementType("g1", m1, 1.0);
+ initializeGenomicElement(g1, 0, 99999);
+ initializeRecombinationRate(1e-8);
+}
+1 early() { 
+    sim.addSubpop("p1", 5000);
+    sim.addSubpop("p2", 500);
+    p1.setMigrationRates(p2, 0.005);
+    p2.setMigrationRates(p1, 0.001);
+    log = community.createLogFile("sim_log.txt", logInterval=500);
+    log.addCycle();
+    log.addCustomColumn("FST", "calcFST(p1.genomes, p2.genomes);"); 
+    log.addCustomColumn("H_p1", "calcHeterozygosity(p1.genomes);"); 
+    log.addCustomColumn("H_p2", "calcHeterozygosity(p2.genomes);"); 
+}
+10000 late() {
+    //p1.outputSample(5);
+    //p1.outputVCFSample(10);
+} 
