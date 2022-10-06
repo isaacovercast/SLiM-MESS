@@ -7,5 +7,5 @@ Obvious.
 Simple two population model with migration.
 
 ### community.txt ###
-Simple two species community model with fixed community size, hackish
+Simple three species community model with fixed community size, hackish
 WF abundance dynamics, and genetics per species. No migration.
