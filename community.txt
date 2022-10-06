@@ -51,6 +51,8 @@ ticks all 1 early() {
 
     // Set up logging
     log = community.createLogFile("com_log.txt", logInterval=20);
+    log.addTick();
+
     for (idx in seqAlong(community.allSpecies)){
         log.addCustomColumn("N_p"+idx, "p"+idx+".individualCount;");
     }
@@ -75,7 +77,7 @@ ticks all early() {
     }
 }
 
-ticks all 100 late() {
+ticks all 101 late() {
     for (p in community.allSubpopulations)
         catn(c(p.name, p.individualCount)) ;
     catn(sum(community.allSubpopulations.individualCount));
