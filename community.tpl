@@ -3,7 +3,7 @@
 
 
 species all initialize() {
-    defineConstant("S", 10);
+    defineConstant("S", {S});
     defineConstant("K", 5000); 
 }
 
