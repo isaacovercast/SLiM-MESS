@@ -43,6 +43,15 @@ This feels hackish, so maybe I won't try it just yet.
 
 ### community_02.txt ###
 
+## Modeling migration from the metacommunity ##
+How to model the metacommunity and migration into the local subpopulations is
+another big, untackled question.
+
+### commmunity_meta.txt###
+
+## in situ speciation ##
+
+## Spatially explicit models ##
 
 
 
